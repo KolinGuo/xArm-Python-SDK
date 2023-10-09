@@ -2289,10 +2289,12 @@ class Base(BaseObject, Events):
             if self.error_code != 0:
                 self.log_api_info('wait_move, xarm has error, error={}'.format(self.error_code), code=APIState.HAS_ERROR)
                 return APIState.HAS_ERROR
-            if self.mode != 0 and self.mode != 11:
+            # if self.mode != 0 and self.mode != 11:
+            if self.mode not in [0, 1, 6, 7, 11]:  # Only wait in these modes
                 return 0
             code, state = self.get_state()
             if code != 0:
+                self.log_api_info(f'wait_move, get_state error {code=} {state=}', code=code)
                 return code
             if state >= 4:
                 self._sleep_finish_time = 0
